@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">JunitAndKoTest</string>
+    <string name="hello">Hello, %1$s. \nNice to meet you.</string>
+    <string name="hint">힌트</string>
+    <string name="done">끝남</string>
 </resources>
