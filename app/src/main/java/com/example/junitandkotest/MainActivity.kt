@@ -3,6 +3,7 @@ package com.example.junitandkotest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -124,9 +125,10 @@ fun DefaultPreview() {
 //@Preview(showBackground = true, backgroundColor = 0xffff0000)
 //@Preview(widthDp = 100, heightDp = 100)
 //@Preview(locale = "ko-kr")
-@Preview()
+@Preview(showBackground = true)
 fun AltGreeting2(@PreviewParameter(HelloProvider::class) name: String) {
-    Hello()
+//    Hello()
+    Factorial()
 }
 
 fun factorialAsString(n: Int): String {
@@ -140,5 +142,35 @@ fun factorialAsString(n: Int): String {
 
 @Composable
 fun Factorial() {
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+    var text by remember {
+        mutableStateOf(factorialAsString(0))
+    }
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            modifier = Modifier.clickable {
+                expanded = true
+            },
+            text = text,
+            style = MaterialTheme.typography.h2
+        )
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            for (n in 0 until 10) {
+                DropdownMenuItem(onClick = {
+                    expanded = false
+                    text = factorialAsString(n)
+                }) {
+                    Text("${n.toString()}!")
+                }
+            }
+        }
+    }
+
 
 }
