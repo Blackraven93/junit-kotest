@@ -11,14 +11,23 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.MeasurePolicy
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.example.junitandkotest.ui.theme.JunitAndKoTestTheme
+import java.lang.reflect.Constructor
+import androidx.compose.runtime.ReusableComposeNode as ReusableComposeNode
 
 class MainActivity : ComponentActivity() {
 
@@ -31,7 +40,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    println(ColoredTextDemo(
+                        text = "Hello Compose",
+                        color = Color.Cyan
+                    ))
                 }
             }
         }
@@ -53,124 +65,78 @@ fun Greeting(name: String) {
 }
 
 @Composable
-fun TextAndButton(
-    name: MutableState<String>,
-    nameEntered: MutableState<Boolean>) {
+fun ColoredTextDemo(text: String = "", color: Color = Color.Black) {
+    Text(text = text, style = TextStyle(color = color))
+}
 
-    Row(modifier = Modifier.padding(top = 8.dp)) {
-        TextField(
-            value = name.value,
-            onValueChange = { name.value = it },
-            placeholder = {
-                Text(text = stringResource(id = R.string.hint))
-            },
-            modifier = Modifier
-                .alignByBaseline()
-                .weight(1.0F),
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                autoCorrect = false,
-                capitalization = KeyboardCapitalization.Words
-            ),
-            keyboardActions = KeyboardActions(onAny = {
-                nameEntered.value = true
-            })
-        )
-        Button(
-            modifier = Modifier
-                .alignByBaseline()
-                .padding(8.dp),
-            onClick = { nameEntered.value = true }) {
-            Text(text = stringResource(id = R.string.done))
-        }
+@Suppress( "ComposableLambdaParameterPosition")
+@Composable inline fun Layout(
+    content: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    measurePolicy: MeasurePolicy
+) {
+    val density = LocalDensity.current
+    val layoutDirection = LocalLayoutDirection.current
+    ReusableComposeNode<ComposeUiNode, Applier<Any>>(
+        factory = ComposeUiNode.Constructor,
+        update = {
+            set(measurePolicy, ComposeUiNode.SetMeasurePolicy)
+            set(density, ComposeUiNode.SetDensity)
+            set(layoutDirection, ComposeUiNode.SetLayoutDirection)
+        },
+        skippableUpdate = materializerOf(modifier),
+        content = content
+    )
+}
+
+@Composable @ExplicitGroupsComposable
+inline fun <T, reified E : Applier<*>> ReusableComposeNode(
+    noinline factory: () -> T,
+    update: @DisallowComposableCalls Updater<T>.() -> Unit,
+    noinline skippableUpdater: @Composable SkippableUpdater<T>.() -> Unit,
+    content: @Composable () -> Unit
+) {
+    if (currentComposer.applier !is E)
+    currentComposer.startReusableNode()
+    if (currentComposer.inserting) {
+        currentComposer.createNode(factory)
+    } else {
+        currentComposer.useNode()
     }
+
+    currentComposer.disableReusing()
+    Updater<T>(currentComposer).update()
+    currentComposer.enableReusing()
+    SkippableUpdater<T>(currentComposer).skippableUpdater()
+    currentComposer.startReplaceableGroup(0x7ab4aae9)
+    content()
+    currentComposer.endReplaceableGroup()
+    currentComposer.endNode()
 }
 
-@Composable
-fun Hello() {
-    val name = remember { mutableStateOf("") }
-    val nameEntered = remember { mutableStateOf(false) }
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        contentAlignment = Alignment
-            .Center
-    ) {
-        if (nameEntered.value) {
-            Greeting(name.value)
-        } else {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Welcome(name = "Raven")
-                TextAndButton(name, nameEntered)
-            }
-        }
+@PublishedApi
+internal interface ComposeUiNode {
+    var measurePolicy: MeasurePolicy
+    var layoutDirection: LayoutDirection
+    var density: Density
+    var modifier: Modifier
+
+    companion object {
+        val Constructor: () -> ComposeUiNode = LayoutNode.Constructor
+        val SetModifier: ComposeUiNode.(Modifier) -> Unit = { this.modifier = it }
+        val SetDensity: ComposeUiNode.(Density) -> Unit = { this.density = it}
+        val SetMeasurePolicy: ComposeUiNode.(MeasurePolicy) -> Unit = { this.measurePolicy = it }
+        val SetLayoutDirection: ComposeUiNode.(LayoutDirection) -> Unit = { this.layoutDirection = it}
     }
-}
-
-class HelloProvider: PreviewParameterProvider<String> {
-    override val values: Sequence<String>
-    get() = listOf("PreviewParameterProvider").asSequence()
-}
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     JunitAndKoTestTheme {
-        Welcome(name = "Raven")
-    }
-}
-
-@Composable
-//@Preview(showBackground = true, backgroundColor = 0xffff0000)
-//@Preview(widthDp = 100, heightDp = 100)
-//@Preview(locale = "ko-kr")
-@Preview(showBackground = true)
-fun AltGreeting2(@PreviewParameter(HelloProvider::class) name: String) {
-//    Hello()
-    Factorial()
-}
-
-fun factorialAsString(n: Int): String {
-    var result = 1L
-    for (i in 1..n) {
-        result *= i
-    }
-
-    return "$n! = $result"
-}
-
-@Composable
-fun Factorial() {
-    var expanded by remember {
-        mutableStateOf(false)
-    }
-    var text by remember {
-        mutableStateOf(factorialAsString(0))
-    }
-
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            modifier = Modifier.clickable {
-                expanded = true
-            },
-            text = text,
-            style = MaterialTheme.typography.h2
+        ColoredTextDemo(
+            text = "Hello Compose",
+            color = Color.Cyan
         )
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            for (n in 0 until 10) {
-                DropdownMenuItem(onClick = {
-                    expanded = false
-                    text = factorialAsString(n)
-                }) {
-                    Text("${n.toString()}!")
-                }
-            }
-        }
     }
-
-
 }
+
