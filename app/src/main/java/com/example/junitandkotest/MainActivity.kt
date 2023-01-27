@@ -124,10 +124,38 @@ internal interface ComposeUiNode {
     companion object {
         val Constructor: () -> ComposeUiNode = LayoutNode.Constructor
         val SetModifier: ComposeUiNode.(Modifier) -> Unit = { this.modifier = it }
-        val SetDensity: ComposeUiNode.(Density) -> Unit = { this.density = it}
+        val SetDensity: ComposeUiNode.(Density) -> Unit = { this.density = it }
         val SetMeasurePolicy: ComposeUiNode.(MeasurePolicy) -> Unit = { this.measurePolicy = it }
-        val SetLayoutDirection: ComposeUiNode.(LayoutDirection) -> Unit = { this.layoutDirection = it}
+        val SetLayoutDirection: ComposeUiNode.(LayoutDirection) -> Unit =
+            { this.layoutDirection = it }
     }
+}
+
+
+@Composable
+fun ColorPicker(color: MutableState<Color>) {
+    val red = color.value.red
+    val green = color.value.green
+    val blue = color.value.blue
+
+    Column {
+        Slider(
+            value = red,
+            onValueChange = { color.value = Color(it, green, blue) }
+        )
+
+        Slider(
+            value = green,
+            onValueChange = { color.value = Color(red, it, blue) }
+        )
+
+        Slider(
+            value = blue,
+            onValueChange = { color.value = Color(red, green, it) }
+        )
+    }
+
+}
 
 @Preview(showBackground = true)
 @Composable
