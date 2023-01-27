@@ -154,7 +154,28 @@ fun ColorPicker(color: MutableState<Color>) {
             onValueChange = { color.value = Color(red, green, it) }
         )
     }
+}
 
+@Composable
+fun CheckBoxWithLabel(label: String, state: MutableState<Boolean>) {
+    Row(
+        modifier = Modifier.clickable {
+            state.value = !state.value
+        }, verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(checked = state.value, onCheckedChange = {state.value = it})
+        Text(text = label, modifier = Modifier.padding(start = 8.dp))
+    }
+}
+
+@Composable
+fun PredefinedLayoutsDemo() {
+    val red = remember { mutableStateOf(true) }
+    val green = remember { mutableStateOf(true) }
+    val blue = remember { mutableStateOf(true) }
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+
+    }
 }
 
 @Preview(showBackground = true)
