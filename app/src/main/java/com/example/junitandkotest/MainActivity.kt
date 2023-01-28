@@ -3,6 +3,7 @@ package com.example.junitandkotest
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -173,8 +174,26 @@ fun PredefinedLayoutsDemo() {
     val red = remember { mutableStateOf(true) }
     val green = remember { mutableStateOf(true) }
     val blue = remember { mutableStateOf(true) }
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
+        CheckBoxWithLabel(label = stringResource(id = R.string.red), state = red)
+        CheckBoxWithLabel(label = stringResource(id = R.string.green), state = green)
+        CheckBoxWithLabel(label = stringResource(id = R.string.blue), state = blue)
 
+        Box(modifier=Modifier.fillMaxSize().padding(top=16.dp)) {
+            if (red.value) {
+                Box(modifier=Modifier.fillMaxSize().background(Color.Red))
+            }
+
+            if (green.value) {
+                Box(modifier=Modifier.fillMaxSize().background(Color.Green))
+            }
+
+            if (blue.value) {
+                Box(modifier=Modifier.fillMaxSize().background(Color.Blue))
+            }
+        }
     }
 }
 
