@@ -6,12 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.MeasurePolicy
 import androidx.compose.ui.platform.LocalDensity
@@ -26,6 +25,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.junitandkotest.ui.theme.JunitAndKoTestTheme
 import java.lang.reflect.Constructor
 import androidx.compose.runtime.ReusableComposeNode as ReusableComposeNode
@@ -158,7 +158,20 @@ fun ColorPicker(color: MutableState<Color>) {
 }
 
 @Composable
-fun CheckBoxWithLabel(label: String, state: MutableState<Boolean>) {
+fun CheckBoxWithLabel(label: String, state: MutableState<Boolean>, modifier: Modifier = Modifier) {
+    ConstraintLayout(
+        modifier = modifier.clickable { state.value = !state.value }) {
+        val (checkbox, text) = createRefs()
+        Checkbox(checked = state.value, onCheckedChange = { state.value = it }, modifier = Modifier.constrainAs(checkbox) {} )
+        Text(
+            text= label,
+            modifier = Modifier.constrainAs(text) {
+                start.linkTo(checkbox.end, margin = 8.dp)
+                top.linkTo(checkbox.top)
+                bottom.linkTo(checkbox.bottom)
+            }
+        )
+    }
     Row(
         modifier = Modifier.clickable {
             state.value = !state.value
@@ -181,17 +194,25 @@ fun PredefinedLayoutsDemo() {
         CheckBoxWithLabel(label = stringResource(id = R.string.green), state = green)
         CheckBoxWithLabel(label = stringResource(id = R.string.blue), state = blue)
 
-        Box(modifier=Modifier.fillMaxSize().padding(top=16.dp)) {
+        Box(modifier= Modifier
+            .fillMaxSize()
+            .padding(top = 16.dp)) {
             if (red.value) {
-                Box(modifier=Modifier.fillMaxSize().background(Color.Red))
+                Box(modifier= Modifier
+                    .fillMaxSize()
+                    .background(Color.Red))
             }
 
             if (green.value) {
-                Box(modifier=Modifier.fillMaxSize().background(Color.Green))
+                Box(modifier= Modifier
+                    .fillMaxSize()
+                    .background(Color.Green))
             }
 
             if (blue.value) {
-                Box(modifier=Modifier.fillMaxSize().background(Color.Blue))
+                Box(modifier= Modifier
+                    .fillMaxSize()
+                    .background(Color.Blue))
             }
         }
     }
