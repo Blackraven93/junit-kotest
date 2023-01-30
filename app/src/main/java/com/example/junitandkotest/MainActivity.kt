@@ -41,10 +41,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    println(ColoredTextDemo(
-                        text = "Hello Compose",
-                        color = Color.Cyan
-                    ))
+
                 }
             }
         }
@@ -52,169 +49,51 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Welcome(name: String) {
-    Text(
-        text = stringResource(id = R.string.hello, name),
-        textAlign = TextAlign.Center,
-        style = MaterialTheme.typography.subtitle1
-    )
+fun MainScreen() {
+    var linearSelected by remember {
+        mutableStateOf(true)
+    }
+    var imageSelected by remember {
+        mutableStateOf(true)
+    }
+    val onLinearClick = { value: Boolean ->
+        linearSelected = value
+    }
+    val onTitleClick = { value: Boolean ->
+        imageSelected = value
+    }
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Composable
-fun ColoredTextDemo(text: String = "", color: Color = Color.Black) {
-    Text(text = text, style = TextStyle(color = color))
-}
-
-@Suppress( "ComposableLambdaParameterPosition")
-@Composable inline fun Layout(
-    content: @Composable () -> Unit,
-    modifier: Modifier = Modifier,
-    measurePolicy: MeasurePolicy
+fun ScreenContent(
+    linearSelected: Boolean,
+    imageSelected: Boolean,
+    onTitleClick: (Boolean) -> Unit,
+    onLinearClick: (Boolean) -> Unit
 ) {
-    val density = LocalDensity.current
-    val layoutDirection = LocalLayoutDirection.current
-    ReusableComposeNode<ComposeUiNode, Applier<Any>>(
-        factory = ComposeUiNode.Constructor,
-        update = {
-            set(measurePolicy, ComposeUiNode.SetMeasurePolicy)
-            set(density, ComposeUiNode.SetDensity)
-            set(layoutDirection, ComposeUiNode.SetLayoutDirection)
-        },
-        skippableUpdate = materializerOf(modifier),
-        content = content
-    )
+    Column(modifier = Modifier.fillMaxSize(),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.SpaceBetween) {
+
+    }
 }
 
-@Composable @ExplicitGroupsComposable
-inline fun <T, reified E : Applier<*>> ReusableComposeNode(
-    noinline factory: () -> T,
-    update: @DisallowComposableCalls Updater<T>.() -> Unit,
-    noinline skippableUpdater: @Composable SkippableUpdater<T>.() -> Unit,
-    content: @Composable () -> Unit
+@Composable
+fun CheckBoxes(
+    linearSelected: Boolean,
+    imageSelected: Boolean,
+    onLinearClick: (Boolean) -> Unit,
+    onTitleClick: (Boolean) -> Unit
 ) {
-    if (currentComposer.applier !is E)
-    currentComposer.startReusableNode()
-    if (currentComposer.inserting) {
-        currentComposer.createNode(factory)
-    } else {
-        currentComposer.useNode()
-    }
-
-    currentComposer.disableReusing()
-    Updater<T>(currentComposer).update()
-    currentComposer.enableReusing()
-    SkippableUpdater<T>(currentComposer).skippableUpdater()
-    currentComposer.startReplaceableGroup(0x7ab4aae9)
-    content()
-    currentComposer.endReplaceableGroup()
-    currentComposer.endNode()
-}
-
-@PublishedApi
-internal interface ComposeUiNode {
-    var measurePolicy: MeasurePolicy
-    var layoutDirection: LayoutDirection
-    var density: Density
-    var modifier: Modifier
-
-    companion object {
-        val Constructor: () -> ComposeUiNode = LayoutNode.Constructor
-        val SetModifier: ComposeUiNode.(Modifier) -> Unit = { this.modifier = it }
-        val SetDensity: ComposeUiNode.(Density) -> Unit = { this.density = it }
-        val SetMeasurePolicy: ComposeUiNode.(MeasurePolicy) -> Unit = { this.measurePolicy = it }
-        val SetLayoutDirection: ComposeUiNode.(LayoutDirection) -> Unit =
-            { this.layoutDirection = it }
-    }
-}
-
-
-@Composable
-fun ColorPicker(color: MutableState<Color>) {
-    val red = color.value.red
-    val green = color.value.green
-    val blue = color.value.blue
-
-    Column {
-        Slider(
-            value = red,
-            onValueChange = { color.value = Color(it, green, blue) }
-        )
-
-        Slider(
-            value = green,
-            onValueChange = { color.value = Color(red, it, blue) }
-        )
-
-        Slider(
-            value = blue,
-            onValueChange = { color.value = Color(red, green, it) }
-        )
-    }
-}
-
-@Composable
-fun CheckBoxWithLabel(label: String, state: MutableState<Boolean>, modifier: Modifier = Modifier) {
-    ConstraintLayout(
-        modifier = modifier.clickable { state.value = !state.value }) {
-        val (checkbox, text) = createRefs()
-        Checkbox(checked = state.value, onCheckedChange = { state.value = it }, modifier = Modifier.constrainAs(checkbox) {} )
-        Text(
-            text= label,
-            modifier = Modifier.constrainAs(text) {
-                start.linkTo(checkbox.end, margin = 8.dp)
-                top.linkTo(checkbox.top)
-                bottom.linkTo(checkbox.bottom)
-            }
-        )
-    }
     Row(
-        modifier = Modifier.clickable {
-            state.value = !state.value
-        }, verticalAlignment = Alignment.CenterVertically
+        Modifier.padding(20.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Checkbox(checked = state.value, onCheckedChange = {state.value = it})
-        Text(text = label, modifier = Modifier.padding(start = 8.dp))
-    }
-}
-
-@Composable
-fun PredefinedLayoutsDemo() {
-    val red = remember { mutableStateOf(true) }
-    val green = remember { mutableStateOf(true) }
-    val blue = remember { mutableStateOf(true) }
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
-        CheckBoxWithLabel(label = stringResource(id = R.string.red), state = red)
-        CheckBoxWithLabel(label = stringResource(id = R.string.green), state = green)
-        CheckBoxWithLabel(label = stringResource(id = R.string.blue), state = blue)
-
-        Box(modifier= Modifier
-            .fillMaxSize()
-            .padding(top = 16.dp)) {
-            if (red.value) {
-                Box(modifier= Modifier
-                    .fillMaxSize()
-                    .background(Color.Red))
-            }
-
-            if (green.value) {
-                Box(modifier= Modifier
-                    .fillMaxSize()
-                    .background(Color.Green))
-            }
-
-            if (blue.value) {
-                Box(modifier= Modifier
-                    .fillMaxSize()
-                    .background(Color.Blue))
-            }
-        }
+        Checkbox(checked = imageSelected, onCheckedChange = onTitleClick)
+        Text("Image Title")
+        Spacer(Modifier.width(20.dp))
+        Checkbox(checked = linearSelected, onCheckedChange = onLinearClick)
+        Text("Linear Progress")
     }
 }
 
@@ -222,10 +101,7 @@ fun PredefinedLayoutsDemo() {
 @Composable
 fun DefaultPreview() {
     JunitAndKoTestTheme {
-        ColoredTextDemo(
-            text = "Hello Compose",
-            color = Color.Cyan
-        )
+        CheckBoxes(linearSelected = true, imageSelected = true, onLinearClick = {}, onTitleClick = {})
     }
 }
 
