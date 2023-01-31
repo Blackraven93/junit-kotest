@@ -97,6 +97,25 @@ fun CheckBoxes(
     }
 }
 
+@Composable
+fun ScreenContent(
+    linearSelected: Boolean,
+    imageSelected: Boolean,
+    onTitleClick: (Boolean) -> Unit,
+    onLinearClick: (Boolean) -> Unit,
+    titleContent: @Composable () -> Unit,
+    progressContent: @Composable () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Alignment.SpaceBetween
+        ) {
+        titleContent()
+        progressContent()
+        CheckBoxes(linearSelected = true, imageSelected = true, onLinearClick = {}, onTitleClick = {})
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
