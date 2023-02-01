@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,7 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.MeasurePolicy
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
@@ -98,13 +101,32 @@ fun CheckBoxes(
 }
 
 @Composable
+fun TitleImage(drawing: Int) {
+    Image(painter = painterResource(id = drawing), contentDescription = "title image")
+}
+
+
+@Composable
 fun ScreenContent(
     linearSelected: Boolean,
     imageSelected: Boolean,
     onTitleClick: (Boolean) -> Unit,
     onLinearClick: (Boolean) -> Unit,
-    titleContent: @Composable () -> Unit,
-    progressContent: @Composable () -> Unit
+    titleContent: () -> Unit = {
+       if (imageSelected) {
+           TitleImage(drawing = R.drawable.ic_baseline_cloud_download_24)
+       } else {
+           Text("Downloading", style = MaterialTheme.typography.h3,
+           modifier = Modifier.padding(30.dp))
+       }
+    } ,
+    progressContent: () -> Unit = {
+        if (linearSelected) {
+            LinearProgressIndicator(Modifier.height(40.dp))
+        } else {
+            CircularProgressIndicator(Modifier.size(200.dp), strokeWidth = 18.dp)
+        }
+    }
 ) {
     Column(modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -115,6 +137,7 @@ fun ScreenContent(
         CheckBoxes(linearSelected = true, imageSelected = true, onLinearClick = {}, onTitleClick = {})
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
