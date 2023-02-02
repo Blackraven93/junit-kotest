@@ -1,37 +1,22 @@
 package com.example.junitandkotest
 
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.MeasurePolicy
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.semantics.Role.Companion.Image
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.compose.ui.unit.sp
 import com.example.junitandkotest.ui.theme.JunitAndKoTestTheme
-import java.lang.reflect.Constructor
-import androidx.compose.runtime.ReusableComposeNode as ReusableComposeNode
 
 class MainActivity : ComponentActivity() {
 
@@ -39,111 +24,35 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             JunitAndKoTestTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
 
-                }
             }
         }
     }
 }
 
 @Composable
-fun MainScreen() {
-    var linearSelected by remember {
-        mutableStateOf(true)
-    }
-    var imageSelected by remember {
-        mutableStateOf(true)
-    }
-    val onLinearClick = { value: Boolean ->
-        linearSelected = value
-    }
-    val onTitleClick = { value: Boolean ->
-        imageSelected = value
-    }
+fun CustomImage(image: Int, modifier: Modifier = Modifier) {
+    Image(
+        painter = painterResource(image),
+        contentDescription = null,
+        modifier
+    )
 }
-
-@Composable
-fun ScreenContent(
-    linearSelected: Boolean,
-    imageSelected: Boolean,
-    onTitleClick: (Boolean) -> Unit,
-    onLinearClick: (Boolean) -> Unit
-) {
-    Column(modifier = Modifier.fillMaxSize(),
-    horizontalAlignment = Alignment.CenterHorizontally,
-    verticalArrangement = Arrangement.SpaceBetween) {
-
-    }
-}
-
-@Composable
-fun CheckBoxes(
-    linearSelected: Boolean,
-    imageSelected: Boolean,
-    onLinearClick: (Boolean) -> Unit,
-    onTitleClick: (Boolean) -> Unit
-) {
-    Row(
-        Modifier.padding(20.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Checkbox(checked = imageSelected, onCheckedChange = onTitleClick)
-        Text("Image Title")
-        Spacer(Modifier.width(20.dp))
-        Checkbox(checked = linearSelected, onCheckedChange = onLinearClick)
-        Text("Linear Progress")
-    }
-}
-
-@Composable
-fun TitleImage(drawing: Int) {
-    Image(painter = painterResource(id = drawing), contentDescription = "title image")
-}
-
-
-@Composable
-fun ScreenContent(
-    linearSelected: Boolean,
-    imageSelected: Boolean,
-    onTitleClick: (Boolean) -> Unit,
-    onLinearClick: (Boolean) -> Unit,
-    titleContent: () -> Unit = {
-       if (imageSelected) {
-           TitleImage(drawing = R.drawable.ic_baseline_cloud_download_24)
-       } else {
-           Text("Downloading", style = MaterialTheme.typography.h3,
-           modifier = Modifier.padding(30.dp))
-       }
-    } ,
-    progressContent: () -> Unit = {
-        if (linearSelected) {
-            LinearProgressIndicator(Modifier.height(40.dp))
-        } else {
-            CircularProgressIndicator(Modifier.size(200.dp), strokeWidth = 18.dp)
-        }
-    }
-) {
-    Column(modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Alignment.SpaceBetween
-        ) {
-        titleContent()
-        progressContent()
-        CheckBoxes(linearSelected = true, imageSelected = true, onLinearClick = {}, onTitleClick = {})
-    }
-}
-
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
+    val modifier = Modifier
+        .padding(all = 10.dp)
+        .border(width = 2.dp, color = Color.Black)
+
     JunitAndKoTestTheme {
-        CheckBoxes(linearSelected = true, imageSelected = true, onLinearClick = {}, onTitleClick = {})
+        Text(
+            "Hello Compose",
+            modifier,
+            fontSize = 40.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
