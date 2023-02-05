@@ -5,9 +5,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -45,14 +46,23 @@ fun DefaultPreview() {
     val modifier = Modifier
         .padding(all = 10.dp)
         .border(width = 2.dp, color = Color.Black)
-
+    val secondModifier = Modifier.height(100.dp)
     JunitAndKoTestTheme {
-        Text(
-            "Hello Compose",
-            modifier,
-            fontSize = 40.sp,
-            fontWeight = FontWeight.Bold
-        )
+
+        Column(
+            Modifier.padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                "Hello Compose",
+                modifier.then(secondModifier),
+                fontSize = 40.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            CustomImage(R.drawable.vacation)
+        }
     }
 }
 
