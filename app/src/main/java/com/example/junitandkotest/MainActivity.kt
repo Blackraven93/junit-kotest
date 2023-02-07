@@ -11,6 +11,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.FirstBaseline
+import androidx.compose.ui.layout.LastBaseline
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.text.font.FontWeight
@@ -65,31 +68,43 @@ fun DefaultPreview() {
     JunitAndKoTestTheme {
         Column() {
             Row(
+                modifier = Modifier.size(width = 400.dp, height = 400.dp),
                 horizontalArrangement = Arrangement.Center,
 
                 verticalAlignment = Alignment.CenterVertically
 
 
             ) {
-                TextCell(text = "1")
-                TextCell(text = "2")
-                TextCell(text = "3")
+                TextCell(text = "1", Modifier.align(Alignment.Top))
+                TextCell(text = "2", Modifier.align(Alignment.CenterVertically))
+                TextCell(text = "3", Modifier.align(Alignment.Bottom))
             }
-
-            Column(
-                Modifier.padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
+            Text(
+                "Hello Compose",
+                modifier.then(secondModifier),
+                fontSize = 40.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Row {
                 Text(
-                    "Hello Compose",
-                    modifier.then(secondModifier),
+                    text = "Large Text\nMore Text",
+                    Modifier.alignBy(LastBaseline),
                     fontSize = 40.sp,
                     fontWeight = FontWeight.Bold
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-                CustomImage(R.drawable.vacation)
+
+                Text(
+                    text = "Small Text",
+                    modifier = Modifier.paddingFrom(
+                        alignmentLine = FirstBaseline,
+                        before = 80.dp, after = 0.dp
+                    ),
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
+//            Spacer(modifier = Modifier.height(16.dp))
+//                CustomImage(R.drawable.vacation)
         }
     }
 }
