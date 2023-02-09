@@ -45,67 +45,36 @@ fun CustomImage(image: Int, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun TextCell(text: String, modifier: Modifier = Modifier) {
+fun TextCell(text: String, modifier: Modifier = Modifier, fontSize: Int = 150) {
     val cellModifier = Modifier
         .padding(4.dp)
-        .size(100.dp, 100.dp)
-        .border(width = 4.dp, color = Color.Black)
+        .border(width = 5.dp, color = Color.Black)
+    Surface {
+        Text(text = text,
+            cellModifier.then(Modifier),
+            fontSize = fontSize.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center)
+    }
 
-    Text(text = text,
-        cellModifier.then(Modifier),
-        fontSize = 70.sp,
-        fontWeight = FontWeight.Bold,
-        textAlign = TextAlign.Center)
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun DefaultPreview() {
-    val modifier = Modifier
-        .padding(all = 10.dp)
-        .border(width = 2.dp, color = Color.Black)
-    val secondModifier = Modifier.height(100.dp)
+
     JunitAndKoTestTheme {
-        Column() {
-            Row(
-                modifier = Modifier.size(width = 400.dp, height = 400.dp),
-                horizontalArrangement = Arrangement.Center,
-
-                verticalAlignment = Alignment.CenterVertically
-
-
+        Box(contentAlignment = Alignment.CenterEnd,
+            modifier = Modifier.size(400.dp, 400.dp)
             ) {
-                TextCell(text = "1", Modifier.align(Alignment.Top))
-                TextCell(text = "2", Modifier.align(Alignment.CenterVertically))
-                TextCell(text = "3", Modifier.align(Alignment.Bottom))
-            }
-            Text(
-                "Hello Compose",
-                modifier.then(secondModifier),
-                fontSize = 40.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Row {
-                Text(
-                    text = "Large Text\nMore Text",
-                    Modifier.alignBy(LastBaseline),
-                    fontSize = 40.sp,
-                    fontWeight = FontWeight.Bold
-                )
+            val height = 200.dp
+            val width = 200.dp
 
-                Text(
-                    text = "Small Text",
-                    modifier = Modifier.paddingFrom(
-                        alignmentLine = FirstBaseline,
-                        before = 80.dp, after = 0.dp
-                    ),
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-//            Spacer(modifier = Modifier.height(16.dp))
-//                CustomImage(R.drawable.vacation)
+            TextCell("1", Modifier.size(width, height))
+            TextCell("2", Modifier.size(width, height))
+            TextCell("3", Modifier.size(width, height))
         }
     }
 }
+
 
