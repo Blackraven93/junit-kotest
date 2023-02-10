@@ -64,15 +64,20 @@ fun TextCell(text: String, modifier: Modifier = Modifier, fontSize: Int = 150) {
 fun DefaultPreview() {
 
     JunitAndKoTestTheme {
-        Box(contentAlignment = Alignment.CenterEnd,
-            modifier = Modifier.size(400.dp, 400.dp)
+        Box(
+            modifier = Modifier.size(height = 90.dp, width = 290.dp)
             ) {
-            val height = 200.dp
-            val width = 200.dp
+            Text("TopStart", Modifier.align(Alignment.TopStart))
+            Text("TopCenter", Modifier.align(Alignment.TopCenter))
+            Text("TopEnd", Modifier.align(Alignment.TopEnd))
 
-            TextCell("1", Modifier.size(width, height))
-            TextCell("2", Modifier.size(width, height))
-            TextCell("3", Modifier.size(width, height))
+            Text("CenterStart", Modifier.align(Alignment.CenterStart))
+            Text("Center", Modifier.align(Alignment.Center))
+            Text("CenterEnd", Modifier.align(Alignment.CenterEnd))
+
+            Text("BottomStart", Modifier.align(Alignment.BottomStart))
+            Text("BottomCenter", Modifier.align(Alignment.BottomCenter))
+            Text("BottomEnt", Modifier.align(Alignment.BottomEnd))
         }
     }
 }
