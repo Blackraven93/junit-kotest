@@ -6,13 +6,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.layout.LastBaseline
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role.Companion.Image
@@ -59,25 +62,29 @@ fun TextCell(text: String, modifier: Modifier = Modifier, fontSize: Int = 150) {
 
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun ColorBox(modifier: Modifier) {
+    Box(modifier = Modifier.padding(1.dp).size(width = 50.dp, height = 10.dp).then(modifier))
+}
+
+fun Modifier.exampleLayout(
+    x: Int,
+    y: Int
+) = layout { measurable, constraints  ->
+    val placeable = measurable.measure(constraints)
+
+    layout(placeable.width, placeable.height) {
+        placeable.placeRelative(x, y)
+    }
+}
+
+@Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
 
     JunitAndKoTestTheme {
-        Box(
-            modifier = Modifier.size(height = 90.dp, width = 290.dp)
-            ) {
-            Text("TopStart", Modifier.align(Alignment.TopStart))
-            Text("TopCenter", Modifier.align(Alignment.TopCenter))
-            Text("TopEnd", Modifier.align(Alignment.TopEnd))
-
-            Text("CenterStart", Modifier.align(Alignment.CenterStart))
-            Text("Center", Modifier.align(Alignment.Center))
-            Text("CenterEnd", Modifier.align(Alignment.CenterEnd))
-
-            Text("BottomStart", Modifier.align(Alignment.BottomStart))
-            Text("BottomCenter", Modifier.align(Alignment.BottomCenter))
-            Text("BottomEnt", Modifier.align(Alignment.BottomEnd))
+        Box(modifier = Modifier.size(120.dp, 80.dp)) {
+            ColorBox(Modifier.exampleLayout(90, 50).background(Color.Blue))
         }
     }
 }
