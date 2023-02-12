@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.junitandkotest.ui.theme.JunitAndKoTestTheme
+import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
 
@@ -68,13 +69,14 @@ fun ColorBox(modifier: Modifier) {
 }
 
 fun Modifier.exampleLayout(
-    x: Int,
-    y: Int
+    fraction: Float
 ) = layout { measurable, constraints  ->
     val placeable = measurable.measure(constraints)
 
+    val x = -(placeable.width * fraction).roundToInt()
+
     layout(placeable.width, placeable.height) {
-        placeable.placeRelative(x, y)
+        placeable.placeRelative(x = x, y = 0)
     }
 }
 
@@ -83,8 +85,15 @@ fun Modifier.exampleLayout(
 fun DefaultPreview() {
 
     JunitAndKoTestTheme {
-        Box(modifier = Modifier.size(120.dp, 80.dp)) {
-            ColorBox(Modifier.exampleLayout(90, 50).background(Color.Blue))
+        Box(contentAlignment= Alignment.Center,
+            modifier = Modifier.size(120.dp, 80.dp)) {
+            Column {
+                ColorBox(Modifier.exampleLayout(0f).background(Color.Blue))
+                ColorBox(Modifier.exampleLayout(0.25f).background(Color.Green))
+                ColorBox(Modifier.exampleLayout(0.5f).background(Color.Yellow))
+                ColorBox(Modifier.exampleLayout(0.25f).background(Color.Red))
+                ColorBox(Modifier.exampleLayout(0.0f).background(Color.Magenta))
+            }
         }
     }
 }
