@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.FirstBaseline
 import androidx.compose.ui.layout.LastBaseline
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
@@ -65,7 +66,10 @@ fun TextCell(text: String, modifier: Modifier = Modifier, fontSize: Int = 150) {
 
 @Composable
 fun ColorBox(modifier: Modifier) {
-    Box(modifier = Modifier.padding(1.dp).size(width = 50.dp, height = 10.dp).then(modifier))
+    Box(modifier = Modifier
+        .padding(1.dp)
+        .size(width = 50.dp, height = 10.dp)
+        .then(modifier))
 }
 
 fun Modifier.exampleLayout(
@@ -80,19 +84,62 @@ fun Modifier.exampleLayout(
     }
 }
 
+@Composable
+fun DoNotingLayout(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Layout(
+        modifier = modifier,
+        content = content
+    ) { measurables, constraints ->
+        val placeables = measurables.map { measurable ->
+            measurable.measure(constraints)
+        }
+        layout(constraints.maxWidth, constraints.maxHeight) {
+            placeables.forEach { placeable ->
+                placeable.placeRelative(x=0, y=0)
+            }
+        }
+
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
 
     JunitAndKoTestTheme {
+        DoNotingLayout(Modifier.padding(8.dp)) {
+            Text("Text Line 1")
+            Text("Text Line 2")
+            Text("Text Line 3")
+            Text("Text Line 4")
+        }
+
         Box(contentAlignment= Alignment.Center,
             modifier = Modifier.size(120.dp, 80.dp)) {
             Column {
-                ColorBox(Modifier.exampleLayout(0f).background(Color.Blue))
-                ColorBox(Modifier.exampleLayout(0.25f).background(Color.Green))
-                ColorBox(Modifier.exampleLayout(0.5f).background(Color.Yellow))
-                ColorBox(Modifier.exampleLayout(0.25f).background(Color.Red))
-                ColorBox(Modifier.exampleLayout(0.0f).background(Color.Magenta))
+                ColorBox(
+                    Modifier
+                        .exampleLayout(0f)
+                        .background(Color.Blue))
+                ColorBox(
+                    Modifier
+                        .exampleLayout(0.25f)
+                        .background(Color.Green))
+                ColorBox(
+                    Modifier
+                        .exampleLayout(0.5f)
+                        .background(Color.Yellow))
+                ColorBox(
+                    Modifier
+                        .exampleLayout(0.25f)
+                        .background(Color.Red))
+                ColorBox(
+                    Modifier
+                        .exampleLayout(0.0f)
+                        .background(Color.Magenta))
             }
         }
     }
