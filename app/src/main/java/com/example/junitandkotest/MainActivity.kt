@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.junitandkotest.ui.theme.JunitAndKoTestTheme
 import kotlin.math.roundToInt
@@ -133,11 +134,28 @@ fun MainScreen() {
     ConstraintLayout(Modifier.size(width = 200.dp, height = 200.dp)) {
         val (button1, button2, button3) = createRefs()
 
-        MyButton(text = "Button1", Modifier.constrainAs(button1)
-        {
-            top.linkTo(parent.top, margin = 60.dp)
-            start.linkTo(parent.start, margin = 30.dp)
+//        MyButton(text = "Button1", Modifier.constrainAs(button1)
+//        {
+//            top.linkTo(parent.top, margin = 60.dp)
+//            start.linkTo(parent.start, margin = 30.dp)
+//        })
+        MyButton(text = "Button1", Modifier.constrainAs(button1) {
+            centerVerticallyTo(parent)
         })
+
+        MyButton(text = "Button2", Modifier.constrainAs(button2) {
+            centerVerticallyTo(parent)
+        })
+
+        MyButton(text = "Button3", Modifier.constrainAs(button3) {
+            centerVerticallyTo(parent)
+        })
+    }
+
+    ConstraintLayout(Modifier.size(width = 400.dp, height = 100.dp)) {
+        val (button1, button2, button3) = createRefs()
+
+        createHorizontalChain(button1, button2, button3, chainStyle = ChainStyle.SpreadInside)
     }
 }
 
@@ -189,25 +207,25 @@ fun DefaultPreview() {
 //            }
 //        }
 
-        Box {
-            CascadeLayout(spacing = 20) {
-                Box(modifier = Modifier
-                    .size(60.dp)
-                    .background(Color.Blue))
-                Box(modifier = Modifier
-                    .size(80.dp, 40.dp)
-                    .background(Color.Red))
-                Box(modifier = Modifier
-                    .size(90.dp, 100.dp)
-                    .background(Color.Cyan))
-                Box(modifier = Modifier
-                    .size(50.dp)
-                    .background(Color.Magenta))
-                Box(modifier = Modifier
-                    .size(70.dp)
-                    .background(Color.Green))
-            }
-        }
+//        Box {
+//            CascadeLayout(spacing = 20) {
+//                Box(modifier = Modifier
+//                    .size(60.dp)
+//                    .background(Color.Blue))
+//                Box(modifier = Modifier
+//                    .size(80.dp, 40.dp)
+//                    .background(Color.Red))
+//                Box(modifier = Modifier
+//                    .size(90.dp, 100.dp)
+//                    .background(Color.Cyan))
+//                Box(modifier = Modifier
+//                    .size(50.dp)
+//                    .background(Color.Magenta))
+//                Box(modifier = Modifier
+//                    .size(70.dp)
+//                    .background(Color.Green))
+//            }
+//        }
         MainScreen()
     }
 }
