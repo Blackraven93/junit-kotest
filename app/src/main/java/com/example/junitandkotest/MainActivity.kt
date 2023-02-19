@@ -157,6 +157,27 @@ fun MainScreen() {
 
         createHorizontalChain(button1, button2, button3, chainStyle = ChainStyle.SpreadInside)
     }
+
+    ConstraintLayout(Modifier.size(width = 400.dp, height= 200.dp)) {
+        val (button1, button2, button3) = createRefs()
+
+        val guide = createGuidelineFromStart(fraction = .60f)
+
+        MyButton(text = "Button1", Modifier.constrainAs(button1) {
+            top.linkTo(parent.top, margin = 30.dp)
+            end.linkTo(guide, margin = 30.dp)
+        })
+
+        MyButton(text = "Button2", Modifier.constrainAs(button2) {
+            top.linkTo(button1.bottom, margin = 20.dp)
+            end.linkTo(guide, margin = 40.dp)
+        })
+
+        MyButton(text = "Button1", Modifier.constrainAs(button3) {
+            top.linkTo(button2.bottom, margin = 40.dp)
+            end.linkTo(guide, margin = 20.dp)
+        })
+    }
 }
 
 @Composable
